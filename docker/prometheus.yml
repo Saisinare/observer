@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'api-monitoring'
+
+scrape_configs:
+  # Scrape the API metrics
+  - job_name: 'api'
+    static_configs:
+      - targets: ['api:9464']
+        labels:
+          service: 'api-monitoring-service'
+  
+  # Scrape Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']

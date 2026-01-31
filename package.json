@@ -1,0 +1,20 @@
+{
+  "name": "api-monitoring-project",
+  "version": "1.0.0",
+  "description": "API monitoring project with OpenTelemetry observability",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@opentelemetry/auto-instrumentations-node": "^0.69.0",
+    "@opentelemetry/exporter-prometheus": "^0.48.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.211.0",
+    "@opentelemetry/resources": "^1.18.0",
+    "@opentelemetry/sdk-metrics": "^1.18.0",
+    "@opentelemetry/sdk-node": "^0.211.0",
+    "@opentelemetry/semantic-conventions": "^1.18.0"
+  }
+}
