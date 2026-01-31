@@ -13,7 +13,7 @@ obervability/
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                      YOUR APPLICATION                        │
+│                      YOUR APPLICATION                       │
 │                                                              │
 │  ┌──────────────┐                                           │
 │  │  server.js   │                                           │
