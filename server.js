@@ -1,28 +1,27 @@
-// Initialize OpenTelemetry FIRST (before any other imports)
+
 const { initTracing } = require('./obervability/tracing');
 const { initMetrics } = require('./obervability/metrics');
+const { logger, httpLogger, initLogging } = require('./obervability/logging');
 
-// Initialize observability
 initTracing();
 
-// Initialize metrics with configuration
 const { middleware: metricsMiddleware } = initMetrics({
   port: 9464,
   endpoint: '/metrics',
   serviceName: 'api-monitoring-service',
 });
 
-console.log('OpenTelemetry initialized successfully');
+initLogging();
 
-// Now import and start the application
+logger.info('OpenTelemetry initialized successfully');
+
 const express = require('express');
 const app = express();
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Apply metrics middleware - automatically tracks all HTTP requests
+app.use(httpLogger);
 app.use(metricsMiddleware);
 
 // Routes
@@ -61,6 +60,7 @@ app.get('/api/slow', (req, res) => {
 
 // Simulated error endpoint for testing
 app.get('/api/error', (req, res) => {
+  logger.error('Simulated error endpoint called');
   res.status(500).json({ 
     error: 'Internal Server Error', 
     message: 'Simulated error for testing',
@@ -72,18 +72,19 @@ app.get('/api/error', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server started on http://localhost:${PORT}`);
-  console.log(`📊 Metrics will be exported to OTLP collector`);
-  console.log(`🔍 Traces will be sent to Jaeger`);
+  logger.info(`Server started on http://localhost:${PORT}`);
+  logger.info('Metrics will be exported to OTLP collector');
+  logger.info('Traces will be sent to Jaeger');
+  logger.info('Logs will be sent to Loki via OTLP collector');
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
+  logger.info('SIGTERM signal received: closing HTTP server');
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
-  console.log('SIGINT signal received: closing HTTP server');
+  logger.info('SIGINT signal received: closing HTTP server');
   process.exit(0);
 });
